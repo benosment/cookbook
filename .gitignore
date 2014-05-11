@@ -52,3 +52,11 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# SQLite databases
+*.sqlite
+
+# Virtual environment
+venv
+
+# Emacs temp files
+*~
