@@ -1,16 +1,19 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask.ext.script import Manager
+from flask.ext.bootstrap import Bootstrap
 
 app = Flask(__name__)
 manager = Manager(app)
+bootstrap = Bootstrap(app)
+
 
 @app.route('/')
 def index():
-    return '<h1>Hello World</h1>'
+    return render_template("index.html")
 
-@app.route('/recipe/<name>')
-def recipe(name):
-    return '<h1>Showing recipe: %s!</h1>' % name
+@app.route('/recipe/<rname>')
+def recipe(rname):
+    return render_template("recipe.html", recipe=rname)
 
 
 if __name__ == '__main__':
