@@ -3,10 +3,12 @@ from flask.ext.script import Manager, Shell
 from flask.ext.bootstrap import Bootstrap
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.migrate import Migrate, MigrateCommand
+from flask.ext.mail import Mail, Message
 from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
 import os
+from threading import Thread
 
 app = Flask(__name__)
 # encryption key for CSRF protection
@@ -14,6 +16,18 @@ app.config['SECRET_KEY'] = 'hard to guess string'
 
 # use Twitter Bootstrap
 bootstrap = Bootstrap(app)
+
+# mail-related configuration
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+# need to have these environ variables defined in shell
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['COOKBOOK_MAIL_SUBJECT_PREFIX'] = '[Cookbook] '
+app.config['COOKBOOK_MAIL_SENDER'] = os.environ.get('COOKBOOK_ADMIN')
+app.config['COOKBOOK_ADMIN'] = os.environ.get('COOKBOOK_ADMIN')
+mail = Mail(app)
 
 # database-related configuration
 base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -83,6 +97,9 @@ def index():
             recipe = Recipe(name=form.name.data)
             db.session.add(recipe)
             flash('Adding new recipe!')
+            if app.config['COOKBOOK_ADMIN']:
+                send_email(app.config['COOKBOOK_ADMIN'], 'New recipe',
+                           'mail/new_recipe', recipe=recipe)
         else:
             flash('That recipe has already been added')
         session['rname'] = form.name.data
@@ -109,7 +126,20 @@ class RecipeForm(Form):
     name = StringField('Recipe name:', validators=[Required()])
     submit = SubmitField('Submit')
 
+def send_email(to, subject, template, **kwargs):
+    msg = Message(app.config['COOKBOOK_MAIL_SUBJECT_PREFIX'] + subject,
+                  sender=app.config['COOKBOOK_MAIL_SENDER'],
+                  recipients=[to])
+    msg.body = render_template(template + '.txt', **kwargs)
+    msg.html = render_template(template + '.html', **kwargs)
+    thread = Thread(target=send_async_email, args=[app, msg])
+    thread.start()
+    return thread
 
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+        
 if __name__ == '__main__':
     manager.run()
 
