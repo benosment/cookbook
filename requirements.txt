@@ -3,3 +3,4 @@ flask-script
 flask-bootstrap
 flask-wtf
 flask-sqlalchemy
+flask-migrate

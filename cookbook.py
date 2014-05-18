@@ -1,7 +1,8 @@
 from flask import Flask, render_template, session, redirect, url_for, flash
-from flask.ext.script import Manager
+from flask.ext.script import Manager, Shell
 from flask.ext.bootstrap import Bootstrap
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
@@ -11,16 +12,27 @@ app = Flask(__name__)
 # encryption key for CSRF protection
 app.config['SECRET_KEY'] = 'hard to guess string'
 
-manager = Manager(app)
+# use Twitter Bootstrap
 bootstrap = Bootstrap(app)
 
 # database-related configuration
 base_dir = os.path.abspath(os.path.dirname(__file__))
-app.config['SECRET_KEY'] = 'hard to guess string'
 app.config['SQLALCHEMY_DATABASE_URI'] =\
     'sqlite:///' + os.path.join(base_dir, 'data.sqlite')
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 db = SQLAlchemy(app)
+
+# use Alembic to manage DB migrations
+migrate = Migrate(app, db)
+
+manager = Manager(app)
+# convenience -- have app, db, Recipe and Tag already imported
+# when you do 'python cookbook.py shell'
+def make_shell_context():
+    return dict(app=app, db=db, Recipe=Recipe, Tag=Tag)
+    
+manager.add_command('shell', Shell(make_context=make_shell_context))
+manager.add_command('db', MigrateCommand)
 
 # With an ORM, the model (a Python class) is mapped to
 # columns in a corresponding database table
@@ -97,7 +109,7 @@ class RecipeForm(Form):
     name = StringField('Recipe name:', validators=[Required()])
     submit = SubmitField('Submit')
 
-    
+
 if __name__ == '__main__':
     manager.run()
 
