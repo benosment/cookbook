@@ -11,8 +11,6 @@ import os
 from threading import Thread
 
 app = Flask(__name__)
-# encryption key for CSRF protection
-app.config['SECRET_KEY'] = 'hard to guess string'
 
 # use Twitter Bootstrap
 bootstrap = Bootstrap(app)
