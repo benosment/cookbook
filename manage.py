@@ -11,10 +11,12 @@ manager = Manager(app)
 # use Alembic to manage DB migrations
 migrate = Migrate(app, db)
 
+
 # convenience -- have app, db, Recipe and Tag already imported
 # when you do 'python cookbook.py shell'
 def make_shell_context():
     return dict(app=app, db=db, Recipe=Recipe, Tag=Tag)
+
 
 @manager.command
 def test():

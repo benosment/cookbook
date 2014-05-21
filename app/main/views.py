@@ -1,9 +1,11 @@
-from flask import render_template, session, redirect, url_for, flash, current_app
+from flask import render_template, session, redirect, \
+    url_for, flash, current_app
 from . import main
 from .forms import RecipeForm
 from .. import db
 from ..models import Recipe
 from ..email import send_email
+
 
 @main.route('/', methods=['GET', 'POST'])
 def index():

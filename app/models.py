@@ -1,8 +1,8 @@
 from . import db
 
+
 # With an ORM, the model (a Python class) is mapped to
 # columns in a corresponding database table
-
 class Recipe(db.Model):
     __tablename__ = 'recipes'
     id = db.Column(db.Integer, primary_key=True)
