@@ -7,6 +7,29 @@ from ..models import Recipe
 from ..email import send_email
 
 
+# TODO
+# - change index to show a list of all recipes
+## @app.route('/')
+## def show_recipes():
+##   recipes = Recipe.query.all()
+##   return render_template('show_recipes.html', recipes=recipes)
+# 
+# - move old index to add
+# - add a link for add on main page
+# - add all fields in the recipe into the form
+#  - in the form, have a diag file selector for the field
+# - lowercase the title of recipe
+# - create an edit page
+## def edit_profile(request):
+##    user = User.objects.get(pk=request.session['userid'])
+##    form = EditProfileForm(request.POST, obj=user)
+##
+##    if request.POST and form.validate():
+##        form.populate_obj(user)
+##        user.save()
+##        return redirect('/home')
+##    return render_to_response('edit_profile.html', form=form)
+# - create a script which backups the database periodically
 @main.route('/', methods=['GET', 'POST'])
 def index():
     form = RecipeForm()

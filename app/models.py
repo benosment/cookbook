@@ -16,10 +16,11 @@ class Recipe(db.Model):
     source = db.Column(db.String(120))
     date_created = db.Column(db.DateTime, default=datetime.utcnow())
     date_updated = db.Column(db.DateTime, default=datetime.utcnow())
-    # TODO add image
-    # one-to-many relationship from tags to recipes
-    # TODO -- should be many-to-many
-    tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'))
+    img_location = db.Column(db.String(120))
+    # TODO -- should be another table, but keeping as string for
+    # simplicity for now
+    tags = db.Column(db.String(120))
+    #tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'))
 
     def __repr__(self):
         return 'Recipe %r' % self.name
