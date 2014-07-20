@@ -3,9 +3,19 @@
 
 {% block title %}Cookbook{% endblock %}
 
+
+
 {% block page_content %}
-<div class="page-header">
-  <h1>{% if rname %} Added {{ rname }}! {% else %} Hello {% endif %}</h1>
-</div>
-{{ wtf.quick_form(form) }}
+  <a href="{{ url_for('.add_recipe') }}">Add new recipe</a>
+
+  <h2>Recipes:</h2>
+  <br>
+  <ul class=entries>
+  {% for recipe in recipes %}
+    <li><h3>{{ recipe.name }}</h3>
+  {% else %}
+    <li><em>No recipes yet.</em>
+  {% endfor %}
+  </ul>
+
 {% endblock %}
