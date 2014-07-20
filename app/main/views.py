@@ -5,7 +5,7 @@ from .forms import RecipeForm
 from .. import db
 from ..models import Recipe
 from ..email import send_email
-
+from datetime import datetime
 
 # TODO
 # - change index to show a list of all recipes
@@ -36,7 +36,17 @@ def index():
     if form.validate_on_submit():
         recipe = Recipe.query.filter_by(name=form.name.data).first()
         if recipe is None:
-            recipe = Recipe(name=form.name.data)
+            recipe = Recipe(name=form.name.data,
+                            description=form.description.data,
+                            directions=form.directions.data,
+                            ingredients=form.ingredients.data,
+                            preparation_time=form.prep_time.data,
+                            num_portions=form.num_portions.data,
+                            source=form.source.data,
+                            date_created=datetime.utcnow(),
+                            date_updated=datetime.utcnow(),
+                            img_location=form.image.data,
+                            tags=form.tags.data)
             db.session.add(recipe)
             flash('Adding new recipe!')
             if current_app.config['COOKBOOK_ADMIN']:

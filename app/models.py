@@ -20,30 +20,8 @@ class Recipe(db.Model):
     # TODO -- should be another table, but keeping as string for
     # simplicity for now
     tags = db.Column(db.String(120))
-    #tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'))
 
     def __repr__(self):
         return 'Recipe %r' % self.name
 
 
-class Ingredient(db.Model):
-    __tablename__ = 'ingredients'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64))
-    quantity = db.Column(db.String(64))
-    # TODO -- one-to-one relationship between Ingredients and Recipes
-
-    def __repr__(self):
-        return 'Ingredient %r' % self.name
-
-
-class Tag(db.Model):
-    __tablename__ = 'tags'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64))
-    # one-to-many relationship from tags to recipes
-    # TODO -- should be many-to-many
-    recipes = db.relationship('Recipe', backref='tag')
-
-    def __repr__(self):
-        return 'Tag %r' % self.name

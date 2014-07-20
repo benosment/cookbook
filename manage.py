@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 from app import create_app, db
-from app.models import Recipe, Tag
+from app.models import Recipe
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 
@@ -12,10 +12,10 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 
 
-# convenience -- have app, db, Recipe and Tag already imported
+# convenience -- have app, db, and Recipe already imported
 # when you do 'python cookbook.py shell'
 def make_shell_context():
-    return dict(app=app, db=db, Recipe=Recipe, Tag=Tag)
+    return dict(app=app, db=db, Recipe=Recipe)
 
 
 @manager.command
